@@ -60,6 +60,30 @@ def delete_users(id):
     response.status_code = 200
 
     return response
+
+@app.route('/users/<id>', methods=['PUT'])
+def delete_users(id):
+    username = request.json.get('username')
+    password = request.json.get('password')
+    email = request.json.get('email')
+
+    update_data = {}
+    
+    if username:
+        update_data['username'] = username
+    
+    if username:
+        update_data['password'] = generate_password_hash(password)    
+    if username:
+        update_data['email'] = email
+    
+    if update_data:
+        mongo.db.users.update_one({"_id": ObjectId(id)}, {'$set': update_data})
+        return jsonify({'message': 'user updated succesfully'})
+    else:
+        return jsonify({"message": "No data provided"})
+
+    return response
     
 @app.errorhandler(404)
 def not_found(error=None):
